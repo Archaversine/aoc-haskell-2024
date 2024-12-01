@@ -24,7 +24,7 @@ parsePair = do
     return (a, b)
 
 parseInput :: String -> Either (ParseErrorBundle String Void) [(Int, Int)]
-parseInput xs = parse (some parsePair) "<day1-input>" xs
+parseInput = parse (some parsePair) "<day1-input>"
     
 combineLists :: [Int] -> [Int] -> Int 
 combineLists xs ys = sum [abs (x - y) | x <- sort xs | y <- sort ys]
