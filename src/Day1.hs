@@ -1,3 +1,5 @@
+{-# LANGUAGE ParallelListComp #-}
+
 module Day1 (runDay) where
 
 import Data.List (sort)
@@ -25,7 +27,7 @@ parseInput :: String -> Either (ParseErrorBundle String Void) [(Int, Int)]
 parseInput xs = parse (some parsePair) "<day1-input>" xs
     
 combineLists :: [Int] -> [Int] -> Int 
-combineLists xs ys = sum $ zipWith (\x y -> abs (x - y)) (sort xs) (sort ys)
+combineLists xs ys = sum [abs (x - y) | x <- sort xs | y <- sort ys]
 
 similarityScore :: [Int] -> [Int] -> Int
 similarityScore xs ys = sum [x * length (filter (== x) ys) | x <- xs]
