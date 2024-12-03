@@ -1,4 +1,6 @@
-module Day2 (runDay) where
+module Day2 (runDay2) where
+
+import Day
 
 parseInput :: String -> [[Int]]
 parseInput = map (map read . words) . lines
@@ -29,19 +31,11 @@ tolerantSafe xs
 countSafes :: ([Int] -> Bool) -> [[Int]] -> Int 
 countSafes f = length . filter id . map f
 
-runFile :: String -> FilePath -> ([[Int]] -> Int) ->  IO () 
-runFile header path f = do 
-    contents <- parseInput <$> readFile path
-    putStrLn $ "> " ++ header
-    putStrLn $ "Value: " ++ show (f contents)
+runDay2 :: IO ()
+runDay2 = runDay 2 (WithFunction parseInput) [
+        ("Test 1", "day2-test.txt" , countSafes isSafe),
+        ("Part 1", "day2-part1.txt", countSafes isSafe),
 
-runDay :: IO ()
-runDay = do 
-    putStrLn "--== DAY TWO ==--"
-
-    runFile "Test"   "day2-test.txt"  (countSafes isSafe)
-    runFile "Part 1" "day2-part1.txt" (countSafes isSafe)
-
-    runFile "Test 2" "day2-test.txt"  (countSafes tolerantSafe)
-    runFile "Part 2" "day2-part1.txt" (countSafes tolerantSafe)
-
+        ("Test 2", "day2-test.txt" , countSafes tolerantSafe),
+        ("Part 2", "day2-part1.txt", countSafes tolerantSafe)
+    ]

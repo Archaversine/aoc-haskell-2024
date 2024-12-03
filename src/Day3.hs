@@ -1,14 +1,10 @@
 {-# LANGUAGE LambdaCase #-}
 
-module Day3 (runDay) where
+module Day3 (runDay, runDay3) where
 
 import Data.Functor
-import Data.Void
 
-import Text.Megaparsec 
-import Text.Megaparsec.Char
-
-type Parser = Parsec Void String
+import Day
 
 data SkipMode = Skip | DontSkip deriving Eq
 
@@ -55,22 +51,14 @@ parseMulsWithoutSkips = parseParseResult >>= \case
 processResult :: [(Int, Int)] -> Int 
 processResult = sum . map (uncurry (*))
 
-runFile :: String -> FilePath -> (SkipMode -> Parser [(Int, Int)]) -> IO () 
-runFile header path p = do 
-    putStrLn $ "> " ++ header
+runDay3 :: IO () 
+runDay3 = do
+    printDayTitle 3
 
-    contents <- readFile path 
-    case parse (p DontSkip) "<day3-input>" contents of 
-        Left err -> putStrLn (errorBundlePretty err)
-        Right rs -> putStrLn $ "Value: " ++ show (processResult rs)
+    runFile "Test"   "day3-test.txt"  (WithParser parseMulsWithoutSkips) processResult
+    runFile "Part 1" "day3-part1.txt" (WithParser parseMulsWithoutSkips) processResult
 
-runDay :: IO () 
-runDay = do 
-    putStrLn "--== DAY THREE ==--"
+    runFile "Test 2" "day3-test2.txt" (WithParser (parseMuls DontSkip)) processResult
+    runFile "Part 2" "day3-part1.txt" (WithParser (parseMuls DontSkip)) processResult
 
-    runFile "Test"   "day3-test.txt"  (const parseMulsWithoutSkips)
-    runFile "Part 1" "day3-part1.txt" (const parseMulsWithoutSkips)
-
-    runFile "Test 2" "day3-test2.txt" parseMuls
-    runFile "Part 2" "day3-part1.txt" parseMuls
 

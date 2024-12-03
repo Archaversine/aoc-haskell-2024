@@ -1,17 +1,11 @@
+{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE ParallelListComp #-}
 
-module Day1 (runDay) where
+module Day1 (runDay1) where
 
 import Data.List (sort)
 
-import Data.Void
-
-import System.Exit
-
-import Text.Megaparsec
-import Text.Megaparsec.Char
-
-type Parser = Parsec Void String
+import Day
 
 parseNumber :: Parser Int
 parseNumber = read <$> (some digitChar <* hspace)
@@ -22,36 +16,20 @@ parsePair = do
     b <- parseNumber <* eol
 
     return (a, b)
-
-parseInput :: String -> Either (ParseErrorBundle String Void) [(Int, Int)]
-parseInput = parse (some parsePair) "<day1-input>"
     
-combineLists :: [Int] -> [Int] -> Int 
-combineLists xs ys = sum [abs (x - y) | x <- sort xs | y <- sort ys]
+combineLists :: [(Int, Int)] -> Int 
+combineLists zs = sum [abs (x - y) | x <- sort xs | y <- sort ys]
+    where (xs, ys) = unzip zs
 
-similarityScore :: [Int] -> [Int] -> Int
-similarityScore xs ys = sum [x * length (filter (== x) ys) | x <- xs]
+similarityScore :: [(Int, Int)] -> Int
+similarityScore zs = sum [x * length (filter (== x) ys) | x <- xs]
+    where (xs, ys) = unzip zs
 
-runFile :: String -> FilePath -> ([Int] -> [Int] -> Int) -> IO () 
-runFile header path f = do 
-    input <- readFile path 
+runDay1 :: IO () 
+runDay1 = runDay 1 (WithParser (some parsePair)) [
+    ("Test 1", "day1-test.txt" , combineLists),
+    ("Part 1", "day1-part1.txt", combineLists),
 
-    putStrLn $ "> " ++ header
-    
-    case parseInput input of 
-        Left err -> do 
-            putStrLn (errorBundlePretty err)
-            exitFailure
-        Right rs -> do 
-            let (xs, ys) = unzip rs
-            putStrLn $ "Value: " ++ show (f xs ys)
-
-runDay :: IO ()
-runDay = do 
-    putStrLn "--== DAY ONE ==--"
-
-    runFile "Test"   "day1-test.txt"  combineLists
-    runFile "Part 1" "day1-part1.txt" combineLists
-
-    runFile "Test (Similarity Score)" "day1-test.txt"  similarityScore
-    runFile "Part 2"                  "day1-part1.txt" similarityScore
+    ("Test 2", "day1-test.txt" , similarityScore),
+    ("Part 2", "day1-part1.txt", similarityScore)
+    ]
