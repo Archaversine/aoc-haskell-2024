@@ -1,6 +1,6 @@
 {-# LANGUAGE LambdaCase #-}
 
-module Day3 where
+module Day3 (runDay) where
 
 import Data.Functor
 import Data.Void
