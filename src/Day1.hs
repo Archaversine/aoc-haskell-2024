@@ -55,5 +55,3 @@ runDay = do
 
     runFile "Test (Similarity Score)" "day1-test.txt"  similarityScore
     runFile "Part 2"                  "day1-part1.txt" similarityScore
-
-    putStrLn "--== ******* ==--"
