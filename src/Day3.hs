@@ -38,10 +38,7 @@ parseMuls :: SkipMode -> Parser [(Int, Int)]
 parseMuls skip = parseParseResult >>= \case
     Mul p -> do 
         rest <- parseMuls skip
-
-        if (skip == DontSkip) then
-            pure (p : rest)
-        else pure rest
+        pure $ if skip == DontSkip then p : rest else rest
     Do   -> parseMuls DontSkip
     Dont -> parseMuls Skip
     Other _ -> parseMuls skip
@@ -52,10 +49,8 @@ parseMulsWithoutSkips = parseParseResult >>= \case
     Mul p -> do 
         rest <- parseMulsWithoutSkips
         pure (p : rest)
-    Do      -> parseMulsWithoutSkips 
-    Dont    -> parseMulsWithoutSkips 
-    Other _ -> parseMulsWithoutSkips
-    EOF     -> pure []
+    EOF -> pure []
+    _   -> parseMulsWithoutSkips
 
 processResult :: [(Int, Int)] -> Int 
 processResult = sum . map (uncurry (*))
