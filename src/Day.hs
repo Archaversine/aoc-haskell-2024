@@ -33,7 +33,7 @@ runFile name path (WithParser   p) f = parse p path <$> readFile path >>= \case
     Left err -> do 
         putStrLn (errorBundlePretty err)
         exitFailure
-    Right rs -> putStrLn $ " * " ++ name ++ ": " ++ show (f rs)
+    Right rs -> printFileValue name (f rs)
 
 runDay :: Show b => Int -> PuzzleParser a -> [(String, FilePath, a -> b)] -> IO ()
 runDay n p xs = do 
